@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const { Telegraf, Markup } = require('telegraf')
 const { getWeatherInCity } = require('./api.js')
+const { getBasicInfoFromCityWeather } = require('./helpers.js')
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
@@ -28,22 +29,26 @@ bot.hears(/Привіт+/i, ctx => {
 })
 
 bot.action(/^setCity-(\w+)$/, async ctx => {
-	console.log(ctx.match[1])
-	let cityPerChat = ctx.match[1]
-	let data = await getWeatherInCity(cityPerChat)
-	ctx.reply('температура в місті ' + cityPerChat + ' ' + data.temp)
+	const cityPerChat = ctx.match[1]
+
+	const data = await getWeatherInCity(cityPerChat)
+	const message = getBasicInfoFromCityWeather(data)
+
+	ctx.reply(message)
 })
 
 bot.action('setOwnCity', ctx => {
-	ctx.reply('введіть назву міста латинецею')
+	ctx.reply('Введіть назву міста латинецею')
 })
 
 bot.hears(/^[a-zA-Z]+$/, async ctx => {
 	console.log(ctx.match[0])
-	let cityPerChat = ctx.match[0]
-	let data = await getWeatherInCity(cityPerChat)
+	const cityPerChat = ctx.match[0]
+	const data = await getWeatherInCity(cityPerChat)
 
-	ctx.reply('температура в місті ' + cityPerChat + ' ' + data.temp)
+	const message = getBasicInfoFromCityWeather(data)
+
+	ctx.reply(message)
 })
 
 bot.launch()

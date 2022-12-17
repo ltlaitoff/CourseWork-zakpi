@@ -8,9 +8,7 @@ async function getWeatherInCity(city) {
 		headers: { 'Content-Type': 'application/json' },
 	})
 
-	const data = await response.json()
-
-	return { city: data.name, temp: data.main.temp }
+	return await response.json()
 }
 
 module.exports = { getWeatherInCity }
