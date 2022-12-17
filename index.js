@@ -1,26 +1,9 @@
 require('dotenv').config()
 
 const { Telegraf, Markup } = require('telegraf')
+const { getWeatherInCity } = require('./api.js')
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
-
-async function getDataFromServer(city) {
-	let api = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.API_TOKEN}&units=metric`
-
-	console.log(api)
-	let response = await fetch(api, {
-		method: 'get',
-		headers: { 'Content-Type': 'application/json' },
-	})
-
-	let data = await response.json()
-
-	console.log(data)
-
-	let obj = { city: data.name, temp: data.main.temp }
-
-	return obj
-}
 
 bot.start(ctx => {
 	ctx.replyWithHTML('Оберіть, будь ласка, місто', {
@@ -47,7 +30,7 @@ bot.hears(/Привіт+/i, ctx => {
 bot.action(/^setCity-(\w+)$/, async ctx => {
 	console.log(ctx.match[1])
 	let cityPerChat = ctx.match[1]
-	let data = await getDataFromServer(cityPerChat)
+	let data = await getWeatherInCity(cityPerChat)
 	ctx.reply('температура в місті ' + cityPerChat + ' ' + data.temp)
 })
 
@@ -58,7 +41,7 @@ bot.action('setOwnCity', ctx => {
 bot.hears(/^[a-zA-Z]+$/, async ctx => {
 	console.log(ctx.match[0])
 	let cityPerChat = ctx.match[0]
-	let data = await getDataFromServer(cityPerChat)
+	let data = await getWeatherInCity(cityPerChat)
 
 	ctx.reply('температура в місті ' + cityPerChat + ' ' + data.temp)
 })
