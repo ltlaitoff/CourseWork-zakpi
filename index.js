@@ -41,14 +41,17 @@ bot.action('setOwnCity', ctx => {
 	ctx.reply('Введіть назву міста латинецею')
 })
 
-bot.hears(/^[a-zA-Z]+$/, async ctx => {
-	console.log(ctx.match[0])
-	const cityPerChat = ctx.match[0]
-	const data = await getWeatherInCity(cityPerChat)
+bot.hears(
+	value => true,
+	async ctx => {
+		const city = ctx.message.text
+		const data = await getWeatherInCity(city)
 
-	const message = getBasicInfoFromCityWeather(data)
+		console.log(data)
+		const message = getBasicInfoFromCityWeather(data, city)
 
-	ctx.reply(message)
-})
+		ctx.reply(message)
+	}
+)
 
 bot.launch()

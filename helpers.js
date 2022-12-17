@@ -1,7 +1,7 @@
-const getBasicInfoFromCityWeather = apiDATA => {
-	if (apiDATA.cod !== 200) return `Інформація не знайдена`
+const getBasicInfoFromCityWeather = (apiDATA, userCity) => {
+	if (apiDATA.cod !== 200) return `Інформація по місцю ${userCity} не знайдена`
 
-	return `Температура в місті ${apiDATA.name} становить ${apiDATA.main.temp}`
+	return `Температура в місті ${userCity} становить ${apiDATA.main.temp}`
 }
 
 module.exports = { getBasicInfoFromCityWeather }
